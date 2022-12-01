@@ -25,7 +25,7 @@
                         </v-text-field>
                       </v-col>
                       <v-col cols="12" xs="12" sm="2" md="2" lg="2" xl="2">
-                        <v-text-field type="number" v-model="Objeto.hp" label="HP" :rules="rules.existencia"
+                        <v-text-field type="number" v-model="Objeto.hp" label="HP" required :rules="rules.existencia"
                           @change="mudaValores(Objeto.hp, 2)">
                         </v-text-field>
                       </v-col>
@@ -36,25 +36,24 @@
             </v-container>
           </q-card-section>
           <q-card-actions align="around">
-            <q-btn flat @click="">
+            <q-btn flat @click="incluirLista">
               INCLUIR
             </q-btn>
             <q-btn flat @click="cleanForm"> LIMPAR </q-btn>
+            <q-btn flat to="/pdf"> PDF </q-btn>
           </q-card-actions>
           <Alert v-if="alert.status" :type="alert.type" :text="alert.text" />
         </q-card>
       </v-col>
     </v-row>
 
-    <Lista :headers="headers" :table="table" title="ITENS" />
+    <Lista :headers="headers" :table="listaObjetos.lista" title="ITENS" />
   </v-container>
 </template>
 
 <script>
 // Resources
 import { defineComponent } from "vue";
-import store from "@/store";
-import { PutData, CreateData } from "../service/Reqs";
 
 // Components
 import NavBar from "../components/NavBar.vue";
@@ -68,12 +67,6 @@ export default defineComponent({
     NavBar,
     Lista,
     Alert,
-  },
-  computed: {
-    table() {
-      return store.state.estoque;
-    },
-
   },
   data() {
     return {
@@ -91,7 +84,7 @@ export default defineComponent({
       },
       headers: [
         {
-          align: "center",
+          align: 'left',
           sortable: true,
           name: "descricao",
           label: "Descrição",
@@ -119,16 +112,12 @@ export default defineComponent({
 
       ],
       rules: {
-        existencia: [(v) => v !== null || "Nome é necessário"],
-        textoLongo: [
-          (v) => !!v || "Campo é necessário",
-          (v) => v.length <= 200 || "Nome não pode exceder 200 caracteres",
-        ],
-        textoCurto: [
-          (v) => !!v || "Campo é necessário",
-          (v) => v.length <= 30 || "Nome não pode exceder 30 caracteres",
-        ],
+        existencia: [(v) => v.length !== 0 || "Campo é necessário"],
       },
+      listaObjetos: {
+        titulo: "",
+        lista: []
+      }
     };
   },
   methods: {
@@ -149,6 +138,28 @@ export default defineComponent({
         this.Objeto.cv = (valor / 0.98632).toFixed(2)
         this.Objeto.kw = (valor / 1.34102).toFixed(2)
       }
+    },
+    incluirLista() {
+      if (this.valid_form) {
+        this.listaObjetos.lista.push({
+          descricao: this.Objeto.descricao,
+          cv: this.Objeto.cv,
+          kw: this.Objeto.kw,
+          hp: this.Objeto.hp,
+        })
+        this.alertAction("Valores inseridos", "success")
+      } else {
+        this.alertAction("Insira valores válidos!", "error")
+      }
+      // this.cleanForm()
+    },
+    alertAction(text, type) {
+      this.alert.text = text
+      this.alert.status = true
+      this.alert.type = type;
+      setInterval(() => {
+        this.alert.status = false
+      }, 3000);
     }
   },
 });

@@ -11,6 +11,11 @@ const routes = [
     name: "home",
     component: () => import("../views/HomeView.vue"),
   },
+  {
+    path: "/pdf",
+    name: "pdf",
+    component: () => import("../views/Impressao.vue"),
+  },
 ];
 
 const router = createRouter({
