@@ -59,9 +59,8 @@
           </q-card-section>
           <q-card-actions align="around">
             <q-btn flat label="TÍTULO/ELABORADOR" @click="dialog = true" />
-            <q-btn flat @click="incluirLista">
-              INCLUIR
-            </q-btn>
+            <q-btn flat v-if="!salvarItem" @click="incluirLista" label="INCLUIR" />
+            <q-btn flat v-else @click="alterarItem" label="SALVAR" />
             <q-btn flat @click="cleanForm" label="LIMPAR" />
             <q-btn flat to="/pdf" label="PDF" :disable="disableFileButtons()" />
             <q-btn flat @click="exportCSV" label="EXPORTA CSV" :disable="disableFileButtons()" />
@@ -72,7 +71,7 @@
       </v-col>
     </v-row>
 
-    <Lista :headers="headers" :table="table" :title="title" :pagination="true" />
+    <Lista :headers="headers" :table="table" :title="title" :pagination="true" @EmitData="EmitData" />
   </v-container>
 </template>
 
@@ -87,8 +86,6 @@ import Lista from "../components/Lista.vue";
 import Alert from "../components/Alerts.vue";
 import { parse } from 'json2csv';
 // import { saveAs } from 'file-saver';   // REMOVER 
-
-
 
 export default defineComponent({
   name: "HomeView",
@@ -111,6 +108,7 @@ export default defineComponent({
   },
   data() {
     return {
+      salvarItem: false,
       dialog: false,
       valid_form: false,
       InsertTitle: null,
@@ -125,8 +123,16 @@ export default defineComponent({
         cv: null,
         kw: null,
         hp: null,
+        id: null,
       },
       headers: [
+        {
+          align: 'left',
+          sortable: true,
+          name: "id",
+          label: "#",
+          field: "id",
+        },
         {
           align: 'left',
           sortable: true,
@@ -166,6 +172,7 @@ export default defineComponent({
   },
   methods: {
     cleanForm() {
+      this.salvarItem = false
       this.$refs.ref_form.reset();
       this.$refs.ref_form.resetValidation();
     },
@@ -189,6 +196,7 @@ export default defineComponent({
         cv: this.Objeto.cv,
         kw: this.Objeto.kw,
         hp: this.Objeto.hp,
+        id: this.table.length
       }
       if (this.valid_form) {
         // this.listaObjetos.lista.push(LocalObj)
@@ -231,6 +239,18 @@ export default defineComponent({
         return false
       }
     },
+    EmitData(data) {
+      this.Objeto.descricao = data.descricao
+      this.Objeto.cv = data.cv
+      this.Objeto.id = data.id
+      this.Objeto.kw = data.kw
+      this.Objeto.hp = data.hp
+      this.salvarItem = true
+    },
+    alterarItem() {
+      this.$store.commit("changeItemList", this.Objeto)
+      this.cleanForm()
+    }
   },
   mounted() {
     if (this.title !== null || this.elaborador !== null) {

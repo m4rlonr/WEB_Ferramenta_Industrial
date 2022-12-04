@@ -18,6 +18,13 @@ export default createStore({
     addElaborador(state, dados) {
       state.elaborador = dados;
     },
+    changeItemList(state, dados) {
+      state.lista[dados.id].descricao = dados.descricao
+      state.lista[dados.id].cv = dados.cv
+      state.lista[dados.id].kw = dados.kw
+      state.lista[dados.id].hp = dados.hp
+
+    }
   },
   actions: {
   },
