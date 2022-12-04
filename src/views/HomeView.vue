@@ -119,11 +119,11 @@ export default defineComponent({
         status: false,
       },
       Objeto: {
+        id: null,
         descricao: null,
         cv: null,
         kw: null,
         hp: null,
-        id: null,
       },
       headers: [
         {
@@ -192,11 +192,11 @@ export default defineComponent({
     },
     incluirLista() {
       let LocalObj = {
+        id: this.table.length,
         descricao: this.Objeto.descricao,
         cv: this.Objeto.cv,
         kw: this.Objeto.kw,
         hp: this.Objeto.hp,
-        id: this.table.length
       }
       if (this.valid_form) {
         // this.listaObjetos.lista.push(LocalObj)

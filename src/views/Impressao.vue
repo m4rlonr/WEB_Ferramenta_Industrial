@@ -72,6 +72,13 @@ export default {
         {
           align: 'left',
           sortable: true,
+          name: "id",
+          label: "#",
+          field: "id",
+        },
+        {
+          align: 'left',
+          sortable: true,
           name: "descricao",
           label: "Descrição",
           field: "descricao",
@@ -80,6 +87,7 @@ export default {
           align: "center",
           name: "cv",
           label: "CV",
+          // field: (row) => this.convertProduto(row.produto),
           field: "cv",
         },
         {
@@ -104,7 +112,7 @@ export default {
       let config = {
         // margin: 0.2,
         pagespilt: true,
-        filename: "Lista de carga de motores",
+        filename: this.title,
         image: { type: "png" },
         html2canvas: { scale: 2 },
         jsPDF: { unit: "in", format: "letter", orientation: "portrait", page_size: "A4" },
