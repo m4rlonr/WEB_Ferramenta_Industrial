@@ -89,6 +89,7 @@ import { parse } from 'json2csv';
 import { saveAs } from 'file-saver';
 
 
+
 export default defineComponent({
   name: "HomeView",
 
@@ -195,8 +196,8 @@ export default defineComponent({
     },
     alertAction(text, type) {
       this.alert.text = text
-      this.alert.type = type;
       this.alert.status = true
+      this.alert.type = type;
 
       setTimeout(() => {
         this.alert.status = false
@@ -213,12 +214,16 @@ export default defineComponent({
       }
     },
     exportCSV() {
-      console.log(store.state.titulo)
-      let table = parse(store.state.lista)
+      let csvContent = "data:text/csv;charset=utf-8," + parse(store.state.lista)
+      var encodedUri = encodeURI(csvContent);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", store.state.titulo + ".csv");
+      document.body.appendChild(link);
 
-      var blob = new Blob(store.state.lista, { type: "text/csv;charset=utf-8" });
-      saveAs(blob, store.state.titulo + ".csv");
+      link.click();
     },
+
     disableFileButtons() {
       if (this.table.length <= 0 || this.title === null) {
         return true
@@ -227,9 +232,8 @@ export default defineComponent({
       }
     },
   },
-  // mounted() {
-  //   this.alertAction("Insira um título clicando no botão 'TÍTULO'", "warning ")
-  //   this.alert.status = true
-  // }
+  created() {
+    // this.disableFileButtons()
+  }
 });
 </script>
