@@ -1,15 +1,20 @@
 <template>
   <v-container>
     <v-row>
-      <v-col style="display: flex; justify-content: center; padding: 6px;">
-        <v-btn @click="download">generate PDF</v-btn>
+      <v-col>
+        <q-card class="my-card text-white" style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)">
+          <q-card-actions align="around">
+            <q-btn flat @click="download">GERAR PDF</q-btn>
+            <q-btn flat to="/">VOLTAR</q-btn>
+          </q-card-actions>
+        </q-card>
       </v-col>
     </v-row>
   </v-container>
   <v-container id="PDFpage">
-    <v-row class="ma-0">
+    <v-row>
       <v-col>
-        <Lista :headers="headers" :table="table" :title="title" pesquisa="true" :pageNumer="0" />
+        <Lista :headers="headers" :table="table" :title="title" pesquisa="true" :pagination="false" />
       </v-col>
     </v-row>
     <v-row class="ma-5">
@@ -26,7 +31,6 @@
                 <p>{{ emitidoEm }}</p>
               </div>
             </div>
-            <!-- <p class="textAlert bg-red-accent-1">Observações: {{ observacoes }}</p> -->
           </v-col>
         </v-row>
       </v-col>
@@ -38,7 +42,6 @@
 import hmtl2pdf from "html2pdf.js";
 import store from "@/store";
 import Lista from "../components/Lista.vue";
-
 
 export default {
   name: "PDFpage",
@@ -97,7 +100,8 @@ export default {
         filename: "Lista de carga de motores",
         image: { type: "png" },
         html2canvas: { scale: 2 },
-        jsPDF: { unit: "in", format: "letter", oientation: "portrait" },
+        jsPDF: { unit: "in", format: "letter", orientation: "portrait", page_size: "A4" },
+        pagebreak: { mode: 'avoid-all', before: '#page2el' }
       };
       let template = document.getElementById("PDFpage");
       hmtl2pdf().set(config).from(template).save();

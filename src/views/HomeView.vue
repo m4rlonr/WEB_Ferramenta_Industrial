@@ -1,6 +1,28 @@
 <template>
   <NavBar />
   <v-container>
+    <q-dialog v-model="dialog">
+      <q-card style="width: 100%">
+        <q-card-section>
+          <div class="text-h6">INSERIR TÍTULO</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <v-container>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field v-model="InsertTitle" required :rules="rules.existencia" label="Insira um título">
+                </v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="SALVAR" v-close-popup @click="storeTitle" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <v-row>
       <v-col>
         <q-card class="my-card text-white" style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)">
@@ -36,29 +58,36 @@
             </v-container>
           </q-card-section>
           <q-card-actions align="around">
+            <q-btn flat label="TÍTULO" @click="dialog = true" />
             <q-btn flat @click="incluirLista">
               INCLUIR
             </q-btn>
-            <q-btn flat @click="cleanForm"> LIMPAR </q-btn>
-            <q-btn flat to="/pdf"> PDF </q-btn>
+            <q-btn flat @click="cleanForm" label="LIMPAR" />
+            <q-btn flat to="/pdf" label="PDF" :disable="disableFileButtons()" />
+            <q-btn flat @click="exportCSV" label="EXPORTA CSV" :disable="disableFileButtons()" />
+            <q-btn flat @click="" label="IMPORTAR CSV" />
           </q-card-actions>
           <Alert v-if="alert.status" :type="alert.type" :text="alert.text" />
         </q-card>
       </v-col>
     </v-row>
 
-    <Lista :headers="headers" :table="listaObjetos.lista" title="ITENS" />
+    <Lista :headers="headers" :table="table" :title="title" :pagination="true" />
   </v-container>
 </template>
 
 <script>
 // Resources
 import { defineComponent } from "vue";
+import store from "@/store";
 
 // Components
 import NavBar from "../components/NavBar.vue";
 import Lista from "../components/Lista.vue";
 import Alert from "../components/Alerts.vue";
+import { parse } from 'json2csv';
+import { saveAs } from 'file-saver';
+
 
 export default defineComponent({
   name: "HomeView",
@@ -68,19 +97,29 @@ export default defineComponent({
     Lista,
     Alert,
   },
+  computed: {
+    table() {
+      return store.state.lista;
+    },
+    title() {
+      return store.state.titulo;
+    },
+  },
   data() {
     return {
+      dialog: false,
       valid_form: false,
+      InsertTitle: null,
       alert: {
         type: null,
         text: null,
         status: false,
       },
       Objeto: {
-        descricao: "",
-        cv: 0,
-        kw: 0,
-        hp: 0,
+        descricao: null,
+        cv: null,
+        kw: null,
+        hp: null,
       },
       headers: [
         {
@@ -140,27 +179,57 @@ export default defineComponent({
       }
     },
     incluirLista() {
+      let LocalObj = {
+        descricao: this.Objeto.descricao,
+        cv: this.Objeto.cv,
+        kw: this.Objeto.kw,
+        hp: this.Objeto.hp,
+      }
       if (this.valid_form) {
-        this.listaObjetos.lista.push({
-          descricao: this.Objeto.descricao,
-          cv: this.Objeto.cv,
-          kw: this.Objeto.kw,
-          hp: this.Objeto.hp,
-        })
+        // this.listaObjetos.lista.push(LocalObj)
         this.alertAction("Valores inseridos", "success")
+        this.storeAdd(LocalObj)
       } else {
         this.alertAction("Insira valores válidos!", "error")
       }
-      // this.cleanForm()
     },
     alertAction(text, type) {
       this.alert.text = text
-      this.alert.status = true
       this.alert.type = type;
-      setInterval(() => {
+      this.alert.status = true
+
+      setTimeout(() => {
         this.alert.status = false
       }, 3000);
-    }
+    },
+    storeAdd(valor) {
+      this.$store.commit("addLista", valor)
+    },
+    storeTitle() {
+      if (this.InsertTitle !== null) {
+        this.$store.commit("addTitle", this.InsertTitle)
+      } else {
+        this.$store.commit("addTitle", "Insira um título")
+      }
+    },
+    exportCSV() {
+      console.log(store.state.titulo)
+      let table = parse(store.state.lista)
+
+      var blob = new Blob(store.state.lista, { type: "text/csv;charset=utf-8" });
+      saveAs(blob, store.state.titulo + ".csv");
+    },
+    disableFileButtons() {
+      if (this.table.length <= 0 || this.title === null) {
+        return true
+      } else {
+        return false
+      }
+    },
   },
+  // mounted() {
+  //   this.alertAction("Insira um título clicando no botão 'TÍTULO'", "warning ")
+  //   this.alert.status = true
+  // }
 });
 </script>

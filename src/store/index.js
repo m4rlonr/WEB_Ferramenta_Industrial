@@ -1,32 +1,19 @@
 import { createStore } from "vuex";
-import { HTTP, AUT } from "../service/axios";
+// import { HTTP, AUT } from "../service/axios";
 
 export default createStore({
   state: {
-    lista: [{
-      descricao: "teste de motor",
-      cv: 10,
-      kw: 1,
-      hp: 2
-    }, {
-      descricao: "teste de motor2",
-      cv: 10,
-      kw: 1,
-      hp: 2
-    }, {
-      descricao: "teste de motor3",
-      cv: 10,
-      kw: 1,
-      hp: 2
-    }
-    ],
-    titulo: "Lista armazem Rafaela",
+    lista: [],
+    titulo: null,
   },
   getters: {},
   mutations: {
-    // mudaLista(state, dados) {
-    //   state.lista = dados;
-    // },
+    addLista(state, dados) {
+      state.lista.push(dados)
+    },
+    addTitle(state, dados) {
+      state.titulo = dados;
+    },
     // mudaTitulo(state, dados) {
     //   state.titulo = dados;
     // },
