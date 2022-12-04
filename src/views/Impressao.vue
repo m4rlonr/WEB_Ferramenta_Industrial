@@ -19,7 +19,7 @@
     </v-row>
     <v-row class="ma-5">
       <v-col class="CampoAssinatura">
-        <span>_____________________________</span>
+        <span style="text-decoration: underline;">{{ elaborador }}</span>
         <span id="linhaAssinatura">Elaborador</span>
       </v-col>
       <v-col>
@@ -33,6 +33,10 @@
             </div>
           </v-col>
         </v-row>
+      </v-col>
+      <v-col class="CampoAssinatura">
+        <span id="linhaAssinatura">Tecnologia Mr'Tecnol</span>
+        <p>Todos os direitos reservados.</p>
       </v-col>
     </v-row>
   </v-container>
@@ -55,6 +59,9 @@ export default {
     },
     title() {
       return store.state.titulo;
+    },
+    elaborador() {
+      return store.state.elaborador;
     },
   },
   data() {

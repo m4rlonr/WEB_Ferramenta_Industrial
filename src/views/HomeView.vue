@@ -11,15 +11,15 @@
           <v-container>
             <v-row>
               <v-col cols="12">
-                <v-text-field v-model="InsertTitle" required :rules="rules.existencia" label="Insira um título">
-                </v-text-field>
+                <v-text-field v-model="InsertTitle" required :rules="rules.existencia" label="Insira um título" />
+                <v-text-field v-model="InsertElaborador" required :rules="rules.existencia" label="Insira seu nome" />
               </v-col>
             </v-row>
           </v-container>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="SALVAR" v-close-popup @click="storeTitle" />
+          <q-btn flat label="SALVAR" v-close-popup @click="storeTitleElab" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -58,14 +58,14 @@
             </v-container>
           </q-card-section>
           <q-card-actions align="around">
-            <q-btn flat label="TÍTULO" @click="dialog = true" />
+            <q-btn flat label="TÍTULO/ELABORADOR" @click="dialog = true" />
             <q-btn flat @click="incluirLista">
               INCLUIR
             </q-btn>
             <q-btn flat @click="cleanForm" label="LIMPAR" />
             <q-btn flat to="/pdf" label="PDF" :disable="disableFileButtons()" />
             <q-btn flat @click="exportCSV" label="EXPORTA CSV" :disable="disableFileButtons()" />
-            <q-btn flat @click="" label="IMPORTAR CSV" />
+            <!-- <q-btn flat @click="" label="IMPORTAR CSV" /> -->
           </q-card-actions>
           <Alert v-if="alert.status" :type="alert.type" :text="alert.text" />
         </q-card>
@@ -86,7 +86,7 @@ import NavBar from "../components/NavBar.vue";
 import Lista from "../components/Lista.vue";
 import Alert from "../components/Alerts.vue";
 import { parse } from 'json2csv';
-import { saveAs } from 'file-saver';
+// import { saveAs } from 'file-saver';   // REMOVER 
 
 
 
@@ -105,12 +105,16 @@ export default defineComponent({
     title() {
       return store.state.titulo;
     },
+    elaborador() {
+      return store.state.elaborador;
+    },
   },
   data() {
     return {
       dialog: false,
       valid_form: false,
       InsertTitle: null,
+      InsertElaborador: null,
       alert: {
         type: null,
         text: null,
@@ -206,12 +210,9 @@ export default defineComponent({
     storeAdd(valor) {
       this.$store.commit("addLista", valor)
     },
-    storeTitle() {
-      if (this.InsertTitle !== null) {
-        this.$store.commit("addTitle", this.InsertTitle)
-      } else {
-        this.$store.commit("addTitle", "Insira um título")
-      }
+    storeTitleElab() {
+      this.$store.commit("addTitle", this.InsertTitle)
+      this.$store.commit("addElaborador", this.InsertElaborador)
     },
     exportCSV() {
       let csvContent = "data:text/csv;charset=utf-8," + parse(store.state.lista)
@@ -223,17 +224,19 @@ export default defineComponent({
 
       link.click();
     },
-
     disableFileButtons() {
-      if (this.table.length <= 0 || this.title === null) {
+      if (this.table.length <= 0 || this.title === null || this.elaborador === null) {
         return true
       } else {
         return false
       }
     },
   },
-  created() {
-    // this.disableFileButtons()
+  mounted() {
+    if (this.title !== null || this.elaborador !== null) {
+      this.InsertTitle = this.title
+      this.InsertElaborador = this.elaborador
+    }
   }
 });
 </script>
