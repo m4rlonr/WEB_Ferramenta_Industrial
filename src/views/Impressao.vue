@@ -5,7 +5,7 @@
         <q-card class="my-card text-white" style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)">
           <q-card-actions align="around">
             <q-btn flat @click="download">GERAR PDF</q-btn>
-            <q-btn flat to="/">VOLTAR</q-btn>
+            <q-btn flat to="/home">VOLTAR</q-btn>
           </q-card-actions>
         </q-card>
       </v-col>
@@ -14,7 +14,8 @@
   <v-container id="PDFpage">
     <v-row>
       <v-col>
-        <Lista :headers="headers" :table="table" :title="title" pesquisa="true" :pagination="false" />
+        <Lista v-if="tipo === 0" :headers="headers" :table="table" :title="title" pesquisa="true" :pagination="false" />
+        <Lista v-if="tipo === 1" :headers="headers1" :table="table" :title="title" pesquisa="true" :pagination="false" />
       </v-col>
     </v-row>
     <v-row class="ma-5">
@@ -55,7 +56,7 @@ export default {
   },
   computed: {
     table() {
-      return store.state.lista;
+      return store.state.listaImpressao;
     },
     title() {
       return store.state.titulo;
@@ -63,9 +64,13 @@ export default {
     elaborador() {
       return store.state.elaborador;
     },
+    tipoImpressao(){
+      return store.state.tipoImpressao;
+    }
   },
   data() {
     return {
+      tipo: null,
       observacoes:
         "A responsabilidade das especificações abaixo é da ELETROTÉCNICA ARAÚJO. Quaisquer alterações ou substituição dos itens listados deverá ser aprovado pela equipe da Engenharia",
       headers: [
@@ -87,7 +92,6 @@ export default {
           align: "center",
           name: "cv",
           label: "CV",
-          // field: (row) => this.convertProduto(row.produto),
           field: "cv",
         },
         {
@@ -102,8 +106,36 @@ export default {
           label: "HP",
           field: "hp",
         },
-
       ],
+      headers1: [
+          {
+            align: 'left',
+            sortable: true,
+            name: "id",
+            label: "#",
+            field: "id",
+          },
+          {
+            align: 'left',
+            sortable: true,
+            name: "descricao",
+            label: "Descrição",
+            field: "descricao",
+          },
+          {
+            align: "center",
+            name: "quantidade",
+            label: "Quantidade",
+            field: "quantidade",
+          },
+          {
+            align: "center",
+            name: "medida",
+            label: "Unidade de medida",
+            field: "medida",
+          },
+  
+        ],
       emitidoEm: null
     };
   },
@@ -121,10 +153,12 @@ export default {
       let template = document.getElementById("PDFpage");
       hmtl2pdf().set(config).from(template).save();
     },
+
   },
   mounted() {
     const today = new Date(Date.now());
     this.emitidoEm = today.toLocaleDateString()
+    this.tipo = this.tipoImpressao
   }
 };
 </script>
