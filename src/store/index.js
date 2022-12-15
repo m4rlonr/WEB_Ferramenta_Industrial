@@ -7,7 +7,7 @@ export default createStore({
     material: [],
     titulo: null,
     elaborador: null,
-    listaImpressao:[],
+    listaImpressao: [],
     tipoImpressao: null
   },
   getters: {},
@@ -29,6 +29,7 @@ export default createStore({
       state.lista[dados.id].cv = dados.cv
       state.lista[dados.id].kw = dados.kw
       state.lista[dados.id].hp = dados.hp
+      state.tensao[dados.id].hp = dados.tensao
     },
     changeItemMaterial(state, dados) {
       state.material[dados.id].descricao = dados.descricao
@@ -36,11 +37,11 @@ export default createStore({
       state.material[dados.id].medida = dados.medida
     },
     changeImpressao(state, value) {
-      if(value === 0){
+      if (value === 0) {
         state.listaImpressao = state.lista
         state.tipoImpressao = 0
-      } 
-      if(value === 1){
+      }
+      if (value === 1) {
         state.listaImpressao = state.material
         state.tipoImpressao = 1
       }

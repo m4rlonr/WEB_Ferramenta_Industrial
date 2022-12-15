@@ -15,7 +15,8 @@
     <v-row>
       <v-col>
         <Lista v-if="tipo === 0" :headers="headers" :table="table" :title="title" pesquisa="true" :pagination="false" />
-        <Lista v-if="tipo === 1" :headers="headers1" :table="table" :title="title" pesquisa="true" :pagination="false" />
+        <Lista v-if="tipo === 1" :headers="headers1" :table="table" :title="title" pesquisa="true"
+          :pagination="false" />
       </v-col>
     </v-row>
     <v-row class="ma-5">
@@ -64,7 +65,7 @@ export default {
     elaborador() {
       return store.state.elaborador;
     },
-    tipoImpressao(){
+    tipoImpressao() {
       return store.state.tipoImpressao;
     }
   },
@@ -92,6 +93,7 @@ export default {
           align: "center",
           name: "cv",
           label: "CV",
+          // field: (row) => this.convertProduto(row.produto),
           field: "cv",
         },
         {
@@ -106,36 +108,42 @@ export default {
           label: "HP",
           field: "hp",
         },
+        {
+          align: "center",
+          name: "tensao",
+          label: "Tensão",
+          field: "tensao",
+        },
       ],
       headers1: [
-          {
-            align: 'left',
-            sortable: true,
-            name: "id",
-            label: "#",
-            field: "id",
-          },
-          {
-            align: 'left',
-            sortable: true,
-            name: "descricao",
-            label: "Descrição",
-            field: "descricao",
-          },
-          {
-            align: "center",
-            name: "quantidade",
-            label: "Quantidade",
-            field: "quantidade",
-          },
-          {
-            align: "center",
-            name: "medida",
-            label: "Unidade de medida",
-            field: "medida",
-          },
-  
-        ],
+        {
+          align: 'left',
+          sortable: true,
+          name: "id",
+          label: "#",
+          field: "id",
+        },
+        {
+          align: 'left',
+          sortable: true,
+          name: "descricao",
+          label: "Descrição",
+          field: "descricao",
+        },
+        {
+          align: "center",
+          name: "quantidade",
+          label: "Quantidade",
+          field: "quantidade",
+        },
+        {
+          align: "center",
+          name: "medida",
+          label: "Unidade de medida",
+          field: "medida",
+        },
+
+      ],
       emitidoEm: null
     };
   },
