@@ -29,7 +29,8 @@ export default createStore({
       state.lista[dados.id].cv = dados.cv
       state.lista[dados.id].kw = dados.kw
       state.lista[dados.id].hp = dados.hp
-      state.tensao[dados.id].hp = dados.tensao
+      state.lista[dados.id].tensao = dados.tensao
+      state.lista[dados.id].corrente = dados.corrente
     },
     changeItemMaterial(state, dados) {
       state.material[dados.id].descricao = dados.descricao

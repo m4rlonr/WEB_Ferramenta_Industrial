@@ -5,7 +5,7 @@
         <q-card class="my-card text-white" style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)">
           <q-card-actions align="around">
             <q-btn flat @click="download">GERAR PDF</q-btn>
-            <q-btn flat to="/home">VOLTAR</q-btn>
+            <q-btn flat @click="Router">VOLTAR</q-btn>
           </q-card-actions>
         </q-card>
       </v-col>
@@ -111,8 +111,15 @@ export default {
         {
           align: "center",
           name: "tensao",
-          label: "Tensão",
+          label: "Tensão(V)",
           field: "tensao",
+        },
+        {
+          align: "center",
+          name: "Corrente ",
+          label: "Corrente(A)",
+          field: "corrente",
+          // field: (row) => this.convertProduto(row.cv, row.tensao),
         },
       ],
       headers1: [
@@ -161,7 +168,24 @@ export default {
       let template = document.getElementById("PDFpage");
       hmtl2pdf().set(config).from(template).save();
     },
-
+    // convertProduto(cv, tensao) {
+    //   console.log(cv, tensao)
+    //   if (tensao === "220") {
+    //     return cv * 2.5
+    //   } if (tensao === "380") {
+    //     return cv * 1.5
+    //   } if (tensao === "440") {
+    //     return cv * 1.75
+    //   }
+    // },
+    Router() {
+      if (this.tipo === 0) {
+        this.$router.push('/carga')
+      }
+      if (this.tipo === 1) {
+        this.$router.push('/material')
+      }
+    }
   },
   mounted() {
     const today = new Date(Date.now());

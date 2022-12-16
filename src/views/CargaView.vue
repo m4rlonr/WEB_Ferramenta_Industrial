@@ -53,8 +53,7 @@
                         </v-text-field>
                       </v-col>
                       <v-col cols="12" xs="12" sm="2" md="2" lg="2" xl="2">
-                        <v-select v-model="Objeto.tensao" required :rules="rules.existencia" :items="choices"
-                          label="Tensão"></v-select>
+                        <v-select v-model="Objeto.tensao" :items="choices" label="Tensão"></v-select>
                       </v-col>
                     </v-row>
                   </v-form>
@@ -132,6 +131,7 @@ export default defineComponent({
         kw: null,
         hp: null,
         tensao: null,
+        corrente: null
       },
       headers: [
         {
@@ -152,7 +152,7 @@ export default defineComponent({
           align: "center",
           name: "cv",
           label: "CV",
-          // field: (row) => this.convertProduto(row.produto),
+          // field: (row) => this.createCorrente(row.produto),
           field: "cv",
         },
         {
@@ -170,14 +170,15 @@ export default defineComponent({
         {
           align: "center",
           name: "tensao",
-          label: "Tensão",
+          label: "Tensão(V)",
           field: "tensao",
         },
         {
           align: "center",
           name: "Corrente ",
-          label: "Corrente",
-          field: (row) => this.convertProduto(row.cv, row.tensao),
+          label: "Corrente(A)",
+          field: "corrente",
+          // field: (row) => this.createCorrente(row.cv, row.tensao),
         },
       ],
       rules: {
@@ -217,9 +218,9 @@ export default defineComponent({
         kw: this.Objeto.kw,
         hp: this.Objeto.hp,
         tensao: this.Objeto.tensao,
+        corrente: this.createCorrente(this.Objeto.cv, this.Objeto.tensao)
       }
       if (this.valid_form) {
-        // this.listaObjetos.lista.push(LocalObj)
         this.alertAction("Valores inseridos", "success")
         this.storeAdd(LocalObj)
       } else {
@@ -269,21 +270,22 @@ export default defineComponent({
       this.salvarItem = true
     },
     alterarItem() {
-      this.$store.commit("changeItemList", this.Objeto)
+      let localObject = this.Objeto
+      localObject.corrente = this.createCorrente(this.Objeto.cv, this.Objeto.tensao)
+      this.$store.commit("changeItemList", localObject)
       this.cleanForm()
     },
     impressaoPage() {
       this.$store.commit("changeImpressao", 0)
       this.$router.push('/pdf')
     },
-    convertProduto(cv, tensao) {
-      console.log(cv, tensao)
+    createCorrente(cv, tensao) {
       if (tensao === "220") {
-        return cv * 3.5
+        return cv * 2.5
       } if (tensao === "380") {
-        return cv * 2.02
+        return cv * 1.5
       } if (tensao === "440") {
-        return cv * 1.75
+        return cv * 1.25
       }
     }
   },
