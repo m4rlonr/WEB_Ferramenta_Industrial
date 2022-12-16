@@ -151,7 +151,7 @@ export default defineComponent({
         existencia: [(v) => v.length !== 0 || "Campo é necessário"],
       },
       choices: [
-        'Metro', 'Centimetro', 'Unidade', 'Litro', 'Mililitro'
+        'Metro', 'Centímetro', 'Unidade', 'Litro', 'Mililitro'
       ]
     };
   },
